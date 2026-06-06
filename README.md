@@ -5,6 +5,9 @@
 **Submission Deadline:** June 06, 2026
 
 ---
+**Instances for testing:**
+-Annotation tool: http://35.184.217.3/
+-Streamlit app:  http://35.184.217.3/streamlit/
 
 ## Team Members
 
@@ -146,7 +149,7 @@ To generate initial labels for 2500 images at 64 cells each (160,000 cells total
 
 ## Step 3 — Manual Verification (Flask Annotation Tool)
 
-A custom **Flask + HTML annotation tool** (`index.html` + Flask `app.py`) was built to allow all four team members to verify auto-generated labels simultaneously:
+A custom **Flask + HTML annotation tool** (packaged as `AttonatorIITBombay.zip`, containing `app.py`, `templates/`, and `static/images/`) was built to allow all four team members to verify auto-generated labels simultaneously:
 
 - Each annotator was assigned a separate CSV file (`_e`, `_m`, `_p`, `_s`)
 - The tool displays each image with the 8×8 grid overlay and predicted labels
@@ -264,17 +267,89 @@ match_photo_001.jpg, Train, 0, 0, 6, 0, 8, 0, ...
 
 ---
 
-## File Index
+## GitHub Repositories
 
-| File | Description |
+| Repository | Description | Link |
+|---|---|---|
+| `group-33` | Main project — notebooks, model, predictions, inference app | https://github.com/IITBombayePGDSem1/group-33 |
+| `attonatorIITBOMBAY` | Flask annotation & label verification tool | https://github.com/IITBombayePGDSem1/attonatorIITBOMBAY |
+
+**Live annotation tool** (used by all 4 team members for collaborative label verification):  
+http://35.184.217.3/
+
+---
+
+## Libraries Used
+
+### Computer Vision & Image Processing
+
+| Library | Usage |
 |---|---|
-| `Webscrapping.ipynb` | Image collection from ESPNcricinfo, Cricbuzz, iplt20.com |
-| `AutoLabelling.ipynb` | HOG-based auto-labelling pipeline |
-| `ModelTournament.ipynb` | Classifier comparison and selection |
-| `ModelTraining_final.ipynb` | Final model training, threshold optimisation, evaluation |
-| `app.py` (Streamlit) | Inference pipeline — loads pkl, runs prediction, exports CSV |
-| `app.py` (Flask) + `index.html` | Manual annotation and verification tool |
-| `model_epsm.pkl` | Trained model with scaler, BoVW vocab, and thresholds |
-| `merged_predictions.csv` | Final labelled dataset (train + test) |
-| `README.txt` | Brief dataset summary |
-| `README.md` | This file |
+| `opencv-python` (cv2) | HOG person detection, image resizing, ORB keypoint extraction, colour space conversion |
+| `Pillow` (PIL) | Image loading, resizing, format conversion |
+| `scikit-image` (skimage) | HOG features, LBP texture (`skimage.feature`), greyscale conversion (`skimage.color`), exposure utilities |
+
+### Machine Learning
+
+| Library | Usage |
+|---|---|
+| `scikit-learn` | `HistGradientBoostingClassifier`, `RandomForestClassifier`, `LinearSVC`, `CalibratedClassifierCV`, `LogisticRegression`, `MiniBatchKMeans`, `KMeans`, `StandardScaler`, `Pipeline`, `TSNE`, `f1_score`, `classification_report`, `silhouette_score`, `davies_bouldin_score`, `cosine_similarity` |
+
+### Data Handling
+
+| Library | Usage |
+|---|---|
+| `numpy` | Array operations, feature vectors, random sampling |
+| `pandas` | CSV loading, label management, train/test splits |
+
+### Web Scraping
+
+| Library | Usage |
+|---|---|
+| `selenium` | Headless Chrome browser automation for scraping |
+| `beautifulsoup4` (bs4) | HTML parsing and image URL extraction |
+| `requests` | HTTP image downloads |
+| `yt-dlp` | YouTube/video frame extraction for dataset diversity |
+
+### Visualisation
+
+| Library | Usage |
+|---|---|
+| `matplotlib` | Grid overlays, feature plots, confusion matrices (`matplotlib.pyplot`, `matplotlib.colors`, `matplotlib.patches`, `matplotlib.patheffects`) |
+| `seaborn` | Heatmaps and distribution plots |
+
+### Web Applications
+
+| Library | Usage |
+|---|---|
+| `streamlit` | Inference pipeline UI (`app.py`) |
+| `flask` | Annotation and label verification tool (`AttonatorIITBombay`) |
+| `werkzeug` | Secure file uploads in Flask |
+
+### Utilities
+
+| Library | Usage |
+|---|---|
+| `tqdm` | Progress bars during feature extraction and training |
+| `pickle` | Model serialisation / deserialisation |
+
+```
+submission/
+│
+├── Webscrapping.ipynb              ← Image collection from ESPNcricinfo, Cricbuzz, iplt20.com
+├── AutoLabelling.ipynb             ← HOG-based auto-labelling pipeline
+├── ModelTournament.ipynb           ← Classifier comparison and selection
+├── ModelTraining_final.ipynb       ← Final model training, threshold optimisation, evaluation
+├── app.py                          ← Streamlit inference pipeline (loads pkl, runs prediction, exports CSV)
+│
+├── AttonatorIITBombay.zip          ← Flask annotation tool (zipped)
+│   ├── app.py                      ← Flask backend
+│   ├── templates/                  ← HTML frontend templates
+│   └── static/images/              ← Static assets
+│
+├── model_epsm.pkl                  ← Trained model (model + scaler + BoVW vocab + thresholds)
+├── merged_predictions.csv          ← Final labelled dataset (train + test, c01–c64)
+├── predictions_epsm.csv            ← Final model predictions output (all 64 cells per image)
+├── README.txt                      ← Brief dataset summary
+└── README.md                       ← This file
+```
